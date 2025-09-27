@@ -2,21 +2,21 @@
 
 A beautiful, responsive image gallery that displays images directly from Google Drive using Google Drive API. Perfect for showcasing products, portfolio, or any image collection with elegant pagination and modal viewing.
 
-## 🌟 Features
+##  Features
 
-- ✨ **Beautiful UI**: Modern gradient background with glass-morphism effects
-- 📱 **Fully Responsive**: Works perfectly on all devices
-- 🔄 **Pagination**: Smart pagination system with page numbers
-- 🖼️ **Modal Viewing**: Click to view full-size images
-- ⚡ **Fast Loading**: Optimized image loading with fallback URLs
-- 🎨 **Modern Design**: Cards with hover effects and smooth animations
-- 🌐 **Easy Setup**: Just replace API key and folder ID
+-  **Beautiful UI**: Modern gradient background with glass-morphism effects
+-  **Fully Responsive**: Works perfectly on all devices
+-  **Pagination**: Smart pagination system with page numbers
+-  **Modal Viewing**: Click to view full-size images
+-  **Fast Loading**: Optimized image loading with fallback URLs
+-  **Modern Design**: Cards with hover effects and smooth animations
+-  **Easy Setup**: Just replace API key and folder ID
 
-## 🚀 Live Demo
+##  Live Demo
 
 Open `index.html` in your browser to see the gallery in action!
 
-## 📋 Prerequisites
+##  Prerequisites
 
 Before using this gallery, you need:
 
@@ -24,7 +24,7 @@ Before using this gallery, you need:
 2. **Google Drive folder with images**
 3. **Google Drive API Key**
 
-## 🛠️ Setup Instructions
+##  Setup Instructions
 
 ### Step 1: Create Google Drive API Key
 
@@ -97,7 +97,7 @@ Before using this gallery, you need:
    - Check API key is correct
    - Ensure API key has no domain restrictions
 
-## 🔧 Customization
+##  Customization
 
 ### Change Items Per Page
 ```javascript
@@ -126,10 +126,10 @@ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 ```
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
-📦 Google-Drive-Gallery/
+ Google-Drive-Gallery/
 ├── 📄 index.html          # Main gallery file
 ├── 📄 README.md           # This documentation
 ├── 📄 setup-guide.md      # Detailed setup guide
@@ -169,7 +169,7 @@ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 | `404 Not Found` | Verify folder ID is correct |
 | `CORS policy` | Use a web server, not file:// |
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -177,27 +177,27 @@ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Google Drive API for providing the backend
 - Modern CSS features for beautiful styling
 - Community feedback for improvements
 
-## 📞 Support
+##  Support
 
 If you have any questions or need help:
 
 1. **Check the [Troubleshooting Guide](troubleshooting.md)**
 2. **Open an issue** on GitHub
-3. **Star the repo** if it helped you! ⭐
+3. **Star the repo** if it helped you! 
 
 ---
 
-### 🔗 Useful Links
+###  Useful Links
 
 - [Google Cloud Console](https://console.cloud.google.com/)
 - [Google Drive API Documentation](https://developers.google.com/drive/api)
