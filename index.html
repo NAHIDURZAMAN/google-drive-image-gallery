@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Professional Image Gallery</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a2a6c, #2a3a7c, #3a4a8c);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    h1 {
+      color: white;
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    
+    .subtitle {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 30px 0;
+      gap: 10px;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 50px;
+      padding: 10px 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      gap: 15px;
+    }
+
+    .page-btn {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .page-btn:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .page-btn.active {
+      background: linear-gradient(45deg, #4285f4, #34a853);
+      box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
+      transform: scale(1.1);
+    }
+
+    .page-btn:disabled {
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.3);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .page-info {
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 0 15px;
+      white-space: nowrap;
+    }
+    
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
+    }
+    
+    .image-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+    }
+    
+    .image-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .image-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .image-card:hover img {
+      transform: scale(1.05);
+    }
+    
+    .card-content {
+      padding: 20px;
+    }
+    
+    .image-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .image-subtitle {
+      color: #666;
+      font-size: 0.85rem;
+      opacity: 0.8;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .image-id {
+      font-family: monospace;
+      background: #f1f3f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+    
+    .loading {
+      text-align: center;
+      color: white;
+      font-size: 1.2rem;
+      margin: 50px 0;
+    }
+    
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .error-message {
+      background: rgba(255,255,255,0.95);
+      color: #e74c3c;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      margin: 20px auto;
+      max-width: 600px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    .stats-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin-bottom: 30px;
+      color: white;
+      font-size: 0.9rem;
+    }
+    
+    .stats-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .stats-icon {
+      font-size: 1.2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .image-card {
+        border-radius: 10px;
+      }
+      
+      .stats-bar {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+    }
+    
+    /* Modal for full-size image viewing */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    
+    .modal-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 15px;
+      text-align: center;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1001;
+    }
+    
+    .close:hover {
+      opacity: 0.7;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    footer {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 50px;
+      padding: 20px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Professional Image Gallery</h1>
+      <p class="subtitle">A sleek, professional gallery displaying images from Google Drive with smooth animations and intuitive controls.</p>
+    </header>
+    
+    <div class="stats-bar" id="statsBar">
+      <div class="stats-item">
+        <span class="stats-icon">📁</span>
+        <span>Folder: <strong>Product Images</strong></span>
+      </div>
+      <div class="stats-item">
+        <span class="stats-icon">🖼️</span>
+        <span>Total Images: <strong id="totalImages">0</strong></span>
+      </div>
+      <div class="stats-item">
+        <span class="stats-icon">📄</span>
+        <span>Page: <strong id="currentPage">1</strong> of <strong id="totalPages">1</strong></span>
+      </div>
+    </div>
+    
+    <div class="loading" id="loading">Loading images...</div>
+    <div class="gallery" id="gallery"></div>
+    
+    <div class="pagination-container" id="paginationContainer"></div>
+    
+    <!-- Modal for full-size image viewing -->
+    <div id="imageModal" class="modal">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img class="modal-content" id="modalImage">
+      <div class="modal-caption" id="modalCaption"></div>
+    </div>
+    
+    <footer>
+      <p>Professional Image Gallery &copy; 2023 | Powered by Google Drive API</p>
+    </footer>
+  </div>
+
+  <script>
+    const folderId = "1HnGs939Un5no5VSP1eDP7mWIlyKZyWHK";
+    const apiKey = "AIzaSyBas_1uDUYdaRlJdTvnI2rIxmcwK6L-FOA";
+
+    // Pagination variables
+    let allImages = [];
+    let currentPage = 1;
+    let itemsPerPage = 12;
+    let totalPages = 1;
+
+    // Modal functions for full-size image viewing
+    function openModal(imageSrc, imageTitle) {
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImage");
+      const modalCaption = document.getElementById("modalCaption");
+      modal.style.display = "block";
+      modalImg.src = imageSrc;
+      modalImg.alt = imageTitle;
+      modalCaption.textContent = imageTitle;
+    }
+    
+    function closeModal() {
+      document.getElementById("imageModal").style.display = "none";
+    }
+    
+    // Close modal when clicking outside the image
+    window.onclick = function(event) {
+      const modal = document.getElementById("imageModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+
+    // Function to fetch all files with pagination
+    async function fetchAllFiles() {
+      let allFiles = [];
+      let pageToken = null;
+      let pageCount = 0;
+      
+      do {
+        pageCount++;
+        console.log(`Loading page ${pageCount}...`);
+        
+        let currentUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&key=${apiKey}&fields=files(id,name,mimeType),nextPageToken&pageSize=1000&orderBy=name`;
+        
+        if (pageToken) {
+          currentUrl += `&pageToken=${pageToken}`;
+        }
+        
+        const response = await fetch(currentUrl);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(`API Error: ${data.error.message}`);
+        }
+        
+        if (data.files && data.files.length > 0) {
+          allFiles = allFiles.concat(data.files);
+          console.log(`Page ${pageCount}: Found ${data.files.length} files. Total so far: ${allFiles.length}`);
+        }
+        
+        pageToken = data.nextPageToken;
+        
+      } while (pageToken);
+      
+      console.log(`Total files found: ${allFiles.length}`);
+      return allFiles;
+    }
+
+    // Function to render pagination controls
+    function renderPagination(totalImages) {
+      totalPages = Math.ceil(totalImages / itemsPerPage);
+      
+      const paginationContainer = document.getElementById('paginationContainer');
+      paginationContainer.innerHTML = '';
+      
+      const pagination = document.createElement('div');
+      pagination.className = 'pagination';
+      
+      // Previous button
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'page-btn';
+      prevBtn.innerHTML = '&laquo;';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.onclick = () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderImages();
+          updateStats();
+        }
+      };
+      
+      // Page info
+      const pageInfo = document.createElement('span');
+      pageInfo.className = 'page-info';
+      pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+      
+      // Next button
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'page-btn';
+      nextBtn.innerHTML = '&raquo;';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.onclick = () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderImages();
+          updateStats();
+        }
+      };
+      
+      pagination.appendChild(prevBtn);
+      pagination.appendChild(pageInfo);
+      pagination.appendChild(nextBtn);
+      paginationContainer.appendChild(pagination);
+    }
+
+    // Function to update stats bar
+    function updateStats() {
+      document.getElementById('totalImages').textContent = allImages.length;
+      document.getElementById('currentPage').textContent = currentPage;
+      document.getElementById('totalPages').textContent = totalPages;
+    }
+
+    // Function to render images for the current page
+    function renderImages() {
+      const gallery = document.getElementById("gallery");
+      gallery.innerHTML = '';
+      
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, allImages.length);
+      const currentImages = allImages.slice(startIndex, endIndex);
+      
+      if (currentImages.length === 0) {
+        gallery.innerHTML = '<div class="error-message">No images found for this page.</div>';
+        return;
+      }
+      
+      currentImages.forEach((file, index) => {
+        // Create image card
+        const card = document.createElement("div");
+        card.className = "image-card";
+        
+        const img = document.createElement("img");
+        img.src = `https://drive.google.com/uc?export=view&id=${file.id}`;
+        img.alt = file.name;
+        img.loading = "lazy"; // Add lazy loading
+        
+        // Add error handling for images
+        img.onerror = function() {
+          console.error("Failed to load image:", file.name, "ID:", file.id);
+          // Try alternative Google Drive URL
+          this.src = `https://lh3.googleusercontent.com/d/${file.id}=w1000`;
+          this.onerror = function() {
+            // If still fails, show placeholder
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xNTAgNzVMMTI1IDEwMEgxNzVMMTUwIDc1WiIgZmlsbD0iIzlmYTZiNyIvPgo8cmVjdCB4PSIxMDAiIHk9IjEyNSIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyNSIgZmlsbD0iIzlmYTZiNyIvPgo8L3N2Zz4=';
+            this.style.backgroundColor = '#f8f9fa';
+            console.error("Image completely failed to load:", file.name);
+          };
+        };
+        
+        const cardContent = document.createElement("div");
+        cardContent.className = "card-content";
+        
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "image-title";
+        titleDiv.textContent = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
+        
+        const subtitle = document.createElement("div");
+        subtitle.className = "image-subtitle";
+        subtitle.innerHTML = `
+          <span>Image #${startIndex + index + 1}</span>
+          <span class="image-id">${file.id.substring(0, 8)}...</span>
+        `;
+        
+        // Add loading effect to images
+        img.onload = function() {
+          console.log("Image loaded successfully:", file.name);
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, (index % 20) * 50);
+        };
+        
+        // Add click event to open modal
+        img.style.cursor = 'pointer';
+        img.onclick = function() {
+          openModal(img.src, file.name);
+        };
+        
+        cardContent.appendChild(titleDiv);
+        cardContent.appendChild(subtitle);
+        card.appendChild(img);
+        card.appendChild(cardContent);
+        gallery.appendChild(card);
+      });
+      
+      // Update pagination controls
+      renderPagination(allImages.length);
+    }
+
+    async function loadImages() {
+      const loading = document.getElementById("loading");
+      const gallery = document.getElementById("gallery");
+      
+      try {
+        loading.textContent = "Loading images from Google Drive...";
+        
+        // Fetch all files with pagination
+        const allFiles = await fetchAllFiles();
+        
+        const imageFiles = allFiles.filter(file => 
+          file.mimeType && file.mimeType.startsWith("image/")
+        );
+        
+        console.log(`Image files found: ${imageFiles.length} out of ${allFiles.length} total files`);
+        
+        if (imageFiles.length === 0) {
+          loading.style.display = 'none';
+          gallery.innerHTML = '<div class="error-message">No images found. Please check folder sharing settings and API key.</div>';
+          return;
+        }
+
+        loading.textContent = `Processing ${imageFiles.length} images...`;
+        
+        // Update title with image count
+        const title = document.querySelector('h1');
+        title.innerHTML = `Professional Image Gallery <small style="font-size:0.6em; opacity:0.8;">(${imageFiles.length} images)</small>`;
+        
+        loading.style.display = 'none';
+        
+        // Store all images and render the first page
+        allImages = imageFiles;
+        renderImages();
+        updateStats();
+        
+      } catch (err) {
+        console.error("Detailed error:", err);
+        console.error("Error message:", err.message);
+        loading.style.display = 'none';
+        
+        if (err.message.includes('referer') || err.message.includes('blocked')) {
+          gallery.innerHTML = `<div class="error-message">API Error: ${err.message}<br><br><strong>Solution:</strong> Visit the <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a><br>1. Click on your API key<br>2. Select "None" for Application restrictions<br>3. Save changes</div>`;
+        } else {
+          gallery.innerHTML = `<div class="error-message">Error: ${err.message}<br>Please check the browser console for details.</div>`;
+        }
+      }
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      loadImages();
+    });
+  </script>
+</body>
+</html>
